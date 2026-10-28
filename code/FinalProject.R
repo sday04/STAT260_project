@@ -6,58 +6,59 @@ library(foreign)
 library(tidyverse)
 library(haven)
 library(fstcore)
+library(fst)
 
-#brfss2024<-read.xport("LLCP2024.XPT ") #only for first time
-#brfss2024<-write_fst(brfss2024, "/Users/ellapace/Desktop/STAT260 Final Project/brfss2024")
-brfss2024<-read_fst("brfss2024") #use this to read in faster after first time
+#brfss2024<-read.xport("data/LLCP2024.XPT") #only for first time
+#brfss2024<-write_fst(brfss2024, "data/brfss2024")
+brfss2024<-read_fst("data/brfss2024") #use this to read in faster after first time
 dim(brfss2024)
 brfss2024<-as_tibble(brfss2024)
 d_2024 <- brfss2024 %>% select(state=X_STATE, sex=X_SEX, race=X_RACE, age=X_AGEG5YR, vaccine=FLUSHOT7)
 d_2024$date <- as.Date(brfss2024$IDATE, "%m%d%Y")
 
-#brfss2023<-read.xport("LLCP2023.XPT ") #only for first time
-#brfss2023<-write_fst(brfss2023, "/Users/ellapace/Desktop/STAT260 Final Project/brfss2023")
-brfss2023<-read_fst("brfss2023") #use this to read in faster after first time
+#brfss2023<-read.xport("data/LLCP2023.XPT") #only for first time
+#brfss2023<-write_fst(brfss2023, "data/brfss2023")
+brfss2023<-read_fst("data/brfss2023") #use this to read in faster after first time
 dim(brfss2023)
 brfss2023<-as_tibble(brfss2023)
 d_2023 <- brfss2023 %>% select(state=X_STATE, sex=X_SEX, race=X_RACE, age=X_AGEG5YR, vaccine=FLUSHOT7)
 d_2023$date <- as.Date(brfss2023$IDATE, "%m%d%Y")
 
-#brfss2022<-read.xport("LLCP2022.XPT ") #only for first time
-#brfss2022<-write_fst(brfss2022, "/Users/ellapace/Desktop/STAT260 Final Project/brfss2022")
-brfss2022<-read_fst("brfss2022") #use this to read in faster after first time
+#brfss2022<-read.xport("data/LLCP2022.XPT") #only for first time
+#brfss2022<-write_fst(brfss2022, "data/brfss2022")
+brfss2022<-read_fst("data/brfss2022") #use this to read in faster after first time
 dim(brfss2022)
 brfss2022<-as_tibble(brfss2022)
 d_2022 <- brfss2022 %>% select(state=X_STATE, sex=X_SEX, race=X_RACE1, age=X_AGEG5YR, vaccine=FLUSHOT7)
 d_2022$date <- as.Date(brfss2022$IDATE, "%m%d%Y")
 
-#brfss2021<-read.xport("LLCP2021.XPT ") #only for first time
-#brfss2021<-write_fst(brfss2021, "/Users/ellapace/Desktop/STAT260 Final Project/brfss2021")
-brfss2021<-read_fst("brfss2021") #use this to read in faster after first time
+#brfss2021<-read.xport("data/LLCP2021.XPT") #only for first time
+#brfss2021<-write_fst(brfss2021, "data/brfss2021")
+brfss2021<-read_fst("data/brfss2021") #use this to read in faster after first time
 dim(brfss2021)
 brfss2021<-as_tibble(brfss2021)
 d_2021 <- brfss2021 %>% select(state=X_STATE, sex=X_SEX, race=X_RACE, age=X_AGEG5YR, vaccine=FLUSHOT7)
 d_2021$date <- as.Date(brfss2021$IDATE, "%m%d%Y")
 
-#brfss2020<-read.xport("LLCP2020.XPT ") #only for first time
-#brfss2020<-write_fst(brfss2020, "/Users/ellapace/Desktop/STAT260 Final Project/brfss2020")
-brfss2020<-read_fst("brfss2020") #use this to read in faster after first time
+#brfss2020<-read.xport("data/LLCP2020.XPT") #only for first time
+#brfss2020<-write_fst(brfss2020, "data/brfss2020")
+brfss2020<-read_fst("data/brfss2020") #use this to read in faster after first time
 dim(brfss2020)
 brfss2020<-as_tibble(brfss2020)
 d_2020 <- brfss2020 %>% select(state=X_STATE, sex=X_SEX, race=X_RACE, age=X_AGEG5YR, vaccine=FLUSHOT7)
 d_2020$date <- as.Date(brfss2020$IDATE, "%m%d%Y")
 
-#brfss2019<-read.xport("LLCP2019.XPT ") #only for first time
-#brfss2019<-write_fst(brfss2019, "/Users/ellapace/Desktop/STAT260 Final Project/brfss2019")
-brfss2019<-read_fst("brfss2019") #use this to read in faster after first time
+#brfss2019<-read.xport("data/LLCP2019.XPT") #only for first time
+#brfss2019<-write_fst(brfss2019, "data/brfss2019")
+brfss2019<-read_fst("data/brfss2019") #use this to read in faster after first time
 dim(brfss2019)
 brfss2019<-as_tibble(brfss2019)
 d_2019 <- brfss2019 %>% select(state=X_STATE, sex=X_SEX, race=X_RACE, age=X_AGEG5YR, vaccine=FLUSHOT7)
 d_2019$date <- as.Date(brfss2019$IDATE, "%m%d%Y")
 
-#brfss2018<-read.xport("LLCP2018.XPT ") #only for first time
-#brfss2018<-write_fst(brfss2018, "/Users/ellapace/Desktop/STAT260 Final Project/brfss2018")
-brfss2018<-read_fst("brfss2018") #use this to read in faster after first time
+#brfss2018<-read.xport("data/LLCP2018.XPT") #only for first time
+#brfss2018<-write_fst(brfss2018, "data/brfss2018")
+brfss2018<-read_fst("data/brfss2018") #use this to read in faster after first time
 dim(brfss2018)
 brfss2018<-as_tibble(brfss2018)
 d_2018 <- brfss2018 %>% select(state=X_STATE, sex=SEX1, race=X_RACE, age=X_AGEG5YR, vaccine=FLUSHOT6)
@@ -189,6 +190,93 @@ par(las=1)
 barplot(vac_freq_2024,
 	main="CDC BRFSS 2024: Did you receive a flu vaccine in the past year?")
 
+
+#CLEANING STATE
+any(is.na(d_2018$state)) #no NA values
+any(is.na(d_2019$state))
+any(is.na(d_2020$state))
+any(is.na(d_2021$state))
+any(is.na(d_2022$state))
+any(is.na(d_2023$state))
+any(is.na(d_2024$state))
+
+state_dict <- c(
+  "1" = "Alabama",
+  "2" = "Alaska",
+  "4" = "Arizona",
+  "5" = "Arkansas",
+  "6" = "California",
+  "8" = "Colorado",
+  "9" = "Connecticut",
+  "10" = "Delaware",
+  "11" = "Washington D.C.",
+  "12" = "Florida",
+  "13" = "Georgia",
+  "15" = "Hawaii",
+  "16" = "Idaho",
+  "17" = "Illinois",
+  "18" = "Indiana",
+  "19" = "Iowa",
+  "20" = "Kansas",
+  "21" = "Kentucky",
+  "22" = "Louisiana",
+  "23" = "Maine",
+  "24" = "Maryland",
+  "25" = "Massachusetts",
+  "26" = "Michigan",
+  "27" = "Minnesota",
+  "28" = "Mississippi",
+  "29" = "Missouri",
+  "30" = "Montana",
+  "31" = "Nebraska",
+  "32" = "Nevada",
+  "33" = "New Hampshire",
+  "34" = "New Jersey",
+  "35" = "New Mexico",
+  "36" = "New York",
+  "37" = "North Carolina",
+  "38" = "North Dakota",
+  "39" = "Ohio",
+  "40" = "Oklahoma",
+  "41" = "Oregon",
+  "42" = "Pennsylvania",
+  "44" = "Rhode Island",
+  "45" = "South Carolina",
+  "46" = "South Dakota",
+  "47" = "Tennessee",
+  "48" = "Texas",
+  "49" = "Utah",
+  "50" = "Vermont",
+  "51" = "Virginia",
+  "53" = "Washington",
+  "54" = "West Virginia",
+  "55" = "Wisconsin",
+  "56" = "Wyoming",
+  "66" = "Guam",
+  "72" = "Puerto Rico",
+  "78" = "US Virgin Islands"
+)
+
+d_2018<- d_2018 %>% 
+  mutate(clean_states = state_dict[state])
+
+d_2019<- d_2019 %>% 
+  mutate(clean_states = state_dict[state])
+
+d_2020<- d_2020 %>% 
+  mutate(clean_states = state_dict[state])
+
+d_2021<- d_2021 %>% 
+  mutate(clean_states = state_dict[state])
+
+d_2022<- d_2022 %>% 
+  mutate(clean_states = state_dict[state])
+  
+d_2023<- d_2023 %>% 
+  mutate(clean_states = state_dict[state])
+
+d_2024<- d_2024 %>% 
+  mutate(clean_states = state_dict[state])
 
 
 
