@@ -1,6 +1,6 @@
 #STAT260 FINAL GROUP PROJECT
 
-#READING DATA SETS: selecting and renaming columns
+#READING DATA SETS: randomly selecting 1000/year and renaming columns
 
 library(foreign)
 library(tidyverse)
@@ -8,64 +8,81 @@ library(haven)
 library(fstcore)
 library(fst)
 
+set.seed(8)
 #brfss2024<-read.xport("data/LLCP2024.XPT") #only for first time
 #brfss2024<-write_fst(brfss2024, "data/brfss2024")
 brfss2024<-read_fst("data/brfss2024") #use this to read in faster after first time
-dim(brfss2024)
-brfss2024<-as_tibble(brfss2024)
-d_2024 <- brfss2024 %>% select(state=X_STATE, sex=X_SEX, race=X_RACE, age=X_AGEG5YR, vaccine=FLUSHOT7)
-d_2024$date <- as.Date(brfss2024$IDATE, "%m%d%Y")
+brfss2024_sample <- brfss2024[sample(nrow(brfss2024), 1000), ]
+dim(brfss2024_sample)
+brfss2024_sample<-as_tibble(brfss2024_sample)
+d_2024 <- brfss2024_sample %>% select(state=X_STATE, sex=X_SEX, race=X_RACE, age=X_AGEG5YR, vaccine=FLUSHOT7)
+d_2024$date <- as.Date(brfss2024_sample$IDATE, "%m%d%Y")
 
 #brfss2023<-read.xport("data/LLCP2023.XPT") #only for first time
 #brfss2023<-write_fst(brfss2023, "data/brfss2023")
 brfss2023<-read_fst("data/brfss2023") #use this to read in faster after first time
-dim(brfss2023)
-brfss2023<-as_tibble(brfss2023)
-d_2023 <- brfss2023 %>% select(state=X_STATE, sex=X_SEX, race=X_RACE, age=X_AGEG5YR, vaccine=FLUSHOT7)
-d_2023$date <- as.Date(brfss2023$IDATE, "%m%d%Y")
+brfss2023_sample <- brfss2023[sample(nrow(brfss2023), 1000), ]
+dim(brfss2023_sample)
+brfss2023_sample<-as_tibble(brfss2023_sample)
+d_2023 <- brfss2023_sample %>% select(state=X_STATE, sex=X_SEX, race=X_RACE, age=X_AGEG5YR, vaccine=FLUSHOT7)
+d_2023$date <- as.Date(brfss2023_sample$IDATE, "%m%d%Y")
 
 #brfss2022<-read.xport("data/LLCP2022.XPT") #only for first time
 #brfss2022<-write_fst(brfss2022, "data/brfss2022")
 brfss2022<-read_fst("data/brfss2022") #use this to read in faster after first time
+brfss2022_sample <- brfss2022[sample(nrow(brfss2022), 1000), ]
 dim(brfss2022)
-brfss2022<-as_tibble(brfss2022)
-d_2022 <- brfss2022 %>% select(state=X_STATE, sex=X_SEX, race=X_RACE1, age=X_AGEG5YR, vaccine=FLUSHOT7)
-d_2022$date <- as.Date(brfss2022$IDATE, "%m%d%Y")
+brfss2022_sample<-as_tibble(brfss2022_sample)
+d_2022 <- brfss2022_sample %>% select(state=X_STATE, sex=X_SEX, race=X_RACE1, age=X_AGEG5YR, vaccine=FLUSHOT7)
+d_2022$date <- as.Date(brfss2022_sample$IDATE, "%m%d%Y")
 
 #brfss2021<-read.xport("data/LLCP2021.XPT") #only for first time
 #brfss2021<-write_fst(brfss2021, "data/brfss2021")
 brfss2021<-read_fst("data/brfss2021") #use this to read in faster after first time
-dim(brfss2021)
-brfss2021<-as_tibble(brfss2021)
-d_2021 <- brfss2021 %>% select(state=X_STATE, sex=X_SEX, race=X_RACE, age=X_AGEG5YR, vaccine=FLUSHOT7)
-d_2021$date <- as.Date(brfss2021$IDATE, "%m%d%Y")
+brfss2021_sample <- brfss2021[sample(nrow(brfss2021), 1000), ]
+dim(brfss2021_sample)
+brfss2021_sample<-as_tibble(brfss2021_sample)
+d_2021 <- brfss2021_sample %>% select(state=X_STATE, sex=X_SEX, race=X_RACE, age=X_AGEG5YR, vaccine=FLUSHOT7)
+d_2021$date <- as.Date(brfss2021_sample$IDATE, "%m%d%Y")
 
 #brfss2020<-read.xport("data/LLCP2020.XPT") #only for first time
 #brfss2020<-write_fst(brfss2020, "data/brfss2020")
 brfss2020<-read_fst("data/brfss2020") #use this to read in faster after first time
-dim(brfss2020)
-brfss2020<-as_tibble(brfss2020)
-d_2020 <- brfss2020 %>% select(state=X_STATE, sex=X_SEX, race=X_RACE, age=X_AGEG5YR, vaccine=FLUSHOT7)
-d_2020$date <- as.Date(brfss2020$IDATE, "%m%d%Y")
+brfss2020_sample <- brfss2020[sample(nrow(brfss2020), 1000), ]
+dim(brfss2020_sample)
+brfss2020_sample<-as_tibble(brfss2020_sample)
+d_2020 <- brfss2020_sample %>% select(state=X_STATE, sex=X_SEX, race=X_RACE, age=X_AGEG5YR, vaccine=FLUSHOT7)
+d_2020$date <- as.Date(brfss2020_sample$IDATE, "%m%d%Y")
 
 #brfss2019<-read.xport("data/LLCP2019.XPT") #only for first time
 #brfss2019<-write_fst(brfss2019, "data/brfss2019")
 brfss2019<-read_fst("data/brfss2019") #use this to read in faster after first time
-dim(brfss2019)
-brfss2019<-as_tibble(brfss2019)
-d_2019 <- brfss2019 %>% select(state=X_STATE, sex=X_SEX, race=X_RACE, age=X_AGEG5YR, vaccine=FLUSHOT7)
-d_2019$date <- as.Date(brfss2019$IDATE, "%m%d%Y")
+brfss2019_sample <- brfss2019[sample(nrow(brfss2019), 1000), ]
+dim(brfss2019_sample)
+brfss2019_sample<-as_tibble(brfss2019_sample)
+d_2019 <- brfss2019_sample %>% select(state=X_STATE, sex=X_SEX, race=X_RACE, age=X_AGEG5YR, vaccine=FLUSHOT7)
+d_2019$date <- as.Date(brfss2019_sample$IDATE, "%m%d%Y")
 
 #brfss2018<-read.xport("data/LLCP2018.XPT") #only for first time
 #brfss2018<-write_fst(brfss2018, "data/brfss2018")
 brfss2018<-read_fst("data/brfss2018") #use this to read in faster after first time
-dim(brfss2018)
-brfss2018<-as_tibble(brfss2018)
-d_2018 <- brfss2018 %>% select(state=X_STATE, sex=SEX1, race=X_RACE, age=X_AGEG5YR, vaccine=FLUSHOT6)
-d_2018$date <- as.Date(brfss2018$IDATE, "%m%d%Y")
+brfss2018_sample <- brfss2018[sample(nrow(brfss2018), 1000), ]
+dim(brfss2018_sample)
+brfss2018_sample<-as_tibble(brfss2018_sample)
+d_2018 <- brfss2018_sample %>% select(state=X_STATE, sex=SEX1, race=X_RACE, age=X_AGEG5YR, vaccine=FLUSHOT6)
+d_2018$date <- as.Date(brfss2018_sample$IDATE, "%m%d%Y")
 
 d_combined<- bind_rows(d_2018, d_2019, d_2020, d_2021, d_2022, d_2023, d_2024)
 dim(d_combined)
+
+# exporting the yearly datasets
+#write.csv(brfss2018_sample, "data/brfss2018_sample.csv")
+#write.csv(brfss2019_sample, "data/brfss2019_sample.csv")
+#write.csv(brfss2020_sample, "data/brfss2020_sample.csv")
+#write.csv(brfss2021_sample, "data/brfss2021_sample.csv")
+#write.csv(brfss2022_sample, "data/brfss2022_sample.csv")
+#write.csv(brfss2023_sample, "data/brfss2023_sample.csv")
+#write.csv(brfss2024_sample, "data/brfss2024_sample.csv")
 
 
 #ignore rest for now....
