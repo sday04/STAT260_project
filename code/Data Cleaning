@@ -1,3 +1,5 @@
+#STAT260 FINAL GROUP PROJECT
+
 #READING DATA SETS: selecting and renaming columns
 
 library(foreign)
@@ -24,14 +26,12 @@ d_2023 <- brfss2023_sample %>% select(state=X_STATE, sex=X_SEX, race=X_RACE, age
 brfss2022_sample<-read.csv("brfss2022_sample.csv")
 dim(brfss2022_sample)
 brfss2022_sample<-as_tibble(brfss2022_sample)
-brfss2022<-as_tibble(brfss2022)
 d_2022 <- brfss2022_sample %>% select(state=X_STATE, sex=X_SEX, race=X_RACE1, age=X_AGEG5YR, vaccine=FLUSHOT7) %>% mutate(date = make_date(year = 2022, month = brfss2022_sample$IMONTH, day = brfss2022_sample$IDAY))
 
 #2021
 brfss2021_sample<-read.csv("brfss2021_sample.csv")
 dim(brfss2021_sample)
 brfss2021_sample<-as_tibble(brfss2021_sample)
-brfss2021<-as_tibble(brfss2021)
 d_2021 <- brfss2021_sample %>% select(state=X_STATE, sex=X_SEX, race=X_RACE, age=X_AGEG5YR, vaccine=FLUSHOT7) %>% mutate(date = make_date(year = 2021, month = brfss2021_sample$IMONTH, day = brfss2021_sample$IDAY))
 
 #2020
@@ -132,3 +132,18 @@ d_combined <- d_combined %>% mutate(race = case_match(race, 1 ~ "White", 2 ~ "Bl
 
 #age
 d_combined <- d_combined %>% mutate(age = case_match(age, 1 ~ "18-24", 2 ~ "25-29", 3 ~ "30-34", 4 ~ "35-39", 5 ~ "40-44", 6 ~ "45-49", 7 ~ "50-54", 8 ~ "55-59", 9 ~ "60-64", 10 ~ "65-69", 11 ~ "70-74", 12 ~ "75-79", 13 ~ "80+", 14 ~ NA))	
+
+
+#FINAL DATA SET
+
+#saving data file
+write.csv(d_combined, "CleanData.csv", row.names=FALSE)
+
+#summarizing NAs
+
+summary(d_combined$state) #328 NAs
+summary(d_combined$sex) #0 NAs
+summary(d_combined$race) #154 NAs
+summary(d_combined$age) #138 NAs
+summary(d_combined$vaccine) #570 NAs
+summary(d_combined$date) #0 NAs
