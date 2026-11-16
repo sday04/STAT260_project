@@ -135,16 +135,21 @@ d_combined <- d_combined %>% mutate(age = case_match(age, 1 ~ "18-24", 2 ~ "25-2
 #adding region variable
 d_combined<-d_combined %>% mutate(region = case_match(state, "Alabama"~"south", "Alaska"~"west", "Arizona"~"west", "Arkansas"~"south", "California"~"west", "Colorado"~"west", "Conneticut"~"northeast", "Delaware"~"northeast", "Florida"~"south", "Georgia"~"south", "Hawaii"~"west", "Idaho"~"west", "Illinois"~"midwest", "Indiana"~"midwest", "Iowa"~"midwest", "Kansas"~"midwest", "Kentucky"~"south", "Louisiana"~"south", "Maine"~"northeast", "Maryland"~"south", "Massachusetts"~"Northeast", "Michigan"~"midwest", "Minnesota"~"midwest", "Mississippi"~"south", "Missouri"~"midwest", "Montana"~"west", "Nebraska"~"midwest", "Nevada"~"west", "New Hampshire"~"northeast","New Jersey"~"northeast", "New Mexico"~"west", "New York"~"northeast", "North Carolina"~"south", "North Dakota"~"midwest", "Ohio"~"midwest", "Oklahoma"~"south", "Oregon"~"west", "Pennsylvania"~"northeast", "Rhode Island"~"northeast", "South Carolina"~"south", "South Dakota"~"midwest", "Tennessee"~"south", "Texas"~"south", "Utah"~"west", "Vermont"~"northeast", "Virginia"~"south", "Washington"~"west", "West Virginia"~"south", "Wisconsin"~"midwest", "Wyoming"~"west", "Guam"~"territory", "Puerto Rico"~"territory", "US Virgin Islands"~"territory", "Washington D.C."~"south"))
 
+#summarizing NAs
+summary(d_combined$state) #3290 NAs
+summary(d_combined$sex) #21 NAs
+summary(d_combined$race) #1587 NAs
+summary(d_combined$age) #1282 NAs
+summary(d_combined$vaccine) #5087 NAs
+summary(d_combined$date) #1 NAs
+
+#removing rows with NAs
+d_combined<- d_combined %>% drop_na()
+
 #FINAL DATA SET
+
+dim(d_combined) # 59,679 rows x 7 columns
 
 #saving data file
 write.csv(d_combined, "CleanData.csv", row.names=FALSE)
 
-#summarizing NAs
-
-summary(d_combined$state) #328 NAs
-summary(d_combined$sex) #0 NAs
-summary(d_combined$race) #154 NAs
-summary(d_combined$age) #138 NAs
-summary(d_combined$vaccine) #570 NAs
-summary(d_combined$date) #0 NAs
