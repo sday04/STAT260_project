@@ -61,8 +61,7 @@ dim(d_combined)
 #CLEANING VARIABLES
 
 #vaccine 
-d_combined$vaccine_DKorR <- ifelse(d_combined$vaccine==7 | d_combined$vaccine==9, 1, 0) #saving 'don't know' and 'refused' responses
-d_combined <- d_combined %>% mutate(vaccine = case_match(vaccine, 1 ~ "yes", 2 ~ "no", 7 ~ NA, 9 ~ NA))
+d_combined <- d_combined %>% mutate(vaccine = case_match(vaccine, 1 ~ "yes", 2 ~ "no", 7 ~ "DK/R", 9 ~ "DK/R"))
 
 #state
 state_dict <- c(
@@ -133,6 +132,8 @@ d_combined <- d_combined %>% mutate(race = case_match(race, 1 ~ "White", 2 ~ "Bl
 #age
 d_combined <- d_combined %>% mutate(age = case_match(age, 1 ~ "18-24", 2 ~ "25-29", 3 ~ "30-34", 4 ~ "35-39", 5 ~ "40-44", 6 ~ "45-49", 7 ~ "50-54", 8 ~ "55-59", 9 ~ "60-64", 10 ~ "65-69", 11 ~ "70-74", 12 ~ "75-79", 13 ~ "80+", 14 ~ NA))	
 
+#adding region variable
+d_combined<-d_combined %>% mutate(region = case_match(state, "Alabama"~"south", "Alaska"~"west", "Arizona"~"west", "Arkansas"~"south", "California"~"west", "Colorado"~"west", "Conneticut"~"northeast", "Delaware"~"northeast", "Florida"~"south", "Georgia"~"south", "Hawaii"~"west", "Idaho"~"west", "Illinois"~"midwest", "Indiana"~"midwest", "Iowa"~"midwest", "Kansas"~"midwest", "Kentucky"~"south", "Louisiana"~"south", "Maine"~"northeast", "Maryland"~"south", "Massachusetts"~"Northeast", "Michigan"~"midwest", "Minnesota"~"midwest", "Mississippi"~"south", "Missouri"~"midwest", "Montana"~"west", "Nebraska"~"midwest", "Nevada"~"west", "New Hampshire"~"northeast","New Jersey"~"northeast", "New Mexico"~"west", "New York"~"northeast", "North Carolina"~"south", "North Dakota"~"midwest", "Ohio"~"midwest", "Oklahoma"~"south", "Oregon"~"west", "Pennsylvania"~"northeast", "Rhode Island"~"northeast", "South Carolina"~"south", "South Dakota"~"midwest", "Tennessee"~"south", "Texas"~"south", "Utah"~"west", "Vermont"~"northeast", "Virginia"~"south", "Washington"~"west", "West Virginia"~"south", "Wisconsin"~"midwest", "Wyoming"~"west", "Guam"~"territory", "Puerto Rico"~"territory", "US Virgin Islands"~"territory", "Washington D.C."~"south"))
 
 #FINAL DATA SET
 
