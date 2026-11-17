@@ -99,22 +99,19 @@ d %>%
   guides(x = guide_axis(angle = 45))
 
 d %>% 
-  group_by(year = floor_date(date, "year"), region) %>%
-  summarise(rate=mean(vaccine == "yes", na.rm = TRUE)) %>% 
-  ggplot(aes(year, rate, color = region)) +
-  ylim(c(0,1)) +
+  mutate(date = as.Date(date)) %>%
+  group_by(region, month = floor_date(date, "month")) %>%
+  summarise(rate = mean(vaccine == "yes", na.rm = TRUE)) %>% 
+  ggplot(aes(x = month, y = rate, color = region)) +
   geom_point() +
-  geom_xspline(shape=-0.4)
+  geom_line() +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  scale_y_continuous(limits = c(0, 1)) +
+  labs(x = "Month",
+       y = "Overall Vaccination Rate",
+       color = "Region of United States")
 
 # Vaccine Rates by Age
-d %>% 
-  group_by(age) %>% 
-  summarise(rate=mean(vaccine == "yes", na.rm = TRUE)) %>% 
-  ggplot(aes(x=age,y=rate)) +
-  ylim(c(0,1))+
-  geom_col() +
-  labs(x= "age group",
-       y= "% Survey Respondents Vaccinated Between 2018-2024")
 
 d %>% 
   group_by(year = floor_date(date, "year"), age) %>%
@@ -125,7 +122,6 @@ d %>%
   geom_xspline(shape=-0.4) + 
   labs(x="year",
        y="Percent of survey respondents\n vaccinated within the last 12 months")
-
 
 # Running random forest to see which predictors are important
 library(randomForest)
