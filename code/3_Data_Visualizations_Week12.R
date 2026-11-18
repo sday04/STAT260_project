@@ -5,13 +5,12 @@ library(splines)
 library(ggfun)
 
 #GRAPHICS
-
 d<-read.csv("CleanData.csv")
 d<-as_tibble(d)
 d$date <- as.Date(d$date)
 
 #vaccine rates by sex
- d %>%	mutate(date = as.Date(date)) %>%
+d %>%	mutate(date = as.Date(date)) %>%
   group_by(sex, month = floor_date(date, "month")) %>%
   summarise(rate = mean(vaccine == "yes")) %>%
   ggplot(aes(month, rate, color = sex)) +
@@ -20,37 +19,13 @@ d$date <- as.Date(d$date)
   scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
   scale_y_continuous(limits = c(0, 1)) +
   labs(x = "Survey month",
-       y = "Percent of survey respondents vaccinated within the last 12 months", title = "Flu vaccination rates by sex 2018-2024")
+       y = "Percent of survey respondents vaccinated within the last 12 months",
+       title = "Flu vaccination rates by sex 2018-2024")
 
 #vaccine rates by race
 
 #all race categories
- d %>%	mutate(date = as.Date(date)) %>%
-  group_by(race, month = floor_date(date, "month")) %>%
-  summarise(rate = mean(vaccine == "yes")) %>%
-  ggplot(aes(month, rate, color = race)) +
-  geom_point()+
-   geom_xspline(shape=-0.4)+
-  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
-  scale_y_continuous(limits = c(0, 1)) +
-  labs(x = "Survey month",
-       y = "Percent of survey respondents vaccinated within the last 12 months", title = "Flu vaccination rates by race 2018-2024")
-
-#no "other" or "pacific islander"
- d %>%	mutate(date = as.Date(date)) %>% filter(race %in% c("American Indian/Alaskan Native", "Asian", "Black", "Hispanic", "Multiracial", "White")) %>%
-  group_by(race, month = floor_date(date, "month")) %>%
-  summarise(rate = mean(vaccine == "yes")) %>%
-  ggplot(aes(month, rate, color = race)) +
-  geom_point()+
-   geom_xspline(shape=-0.4)+
-  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
-  scale_y_continuous(limits = c(0, 1)) +
-  labs(x = "Survey month",
-       y = "Percent of survey respondents vaccinated within the last 12 months", title = "Flu vaccination rates by race 2018-2024")
-
-#"American Indian/Alaskan Native," "Multiracial", "Pacific Islander" all coded as "Other"
-d %>%	mutate(date = as.Date(date),
-  race = ifelse(race %in% c("American Indian/Alaskan Native", "Multiracial", "Pacific Islander", "Other"),"Other", race)) %>%
+d %>%	mutate(date = as.Date(date)) %>%
   group_by(race, month = floor_date(date, "month")) %>%
   summarise(rate = mean(vaccine == "yes")) %>%
   ggplot(aes(month, rate, color = race)) +
@@ -59,7 +34,35 @@ d %>%	mutate(date = as.Date(date),
   scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
   scale_y_continuous(limits = c(0, 1)) +
   labs(x = "Survey month",
-       y = "Percent of survey respondents\n vaccinated within the last 12 months", title = "Flu vaccination rates by race 2018-2024")
+       y = "Percent of survey respondents vaccinated within the last 12 months",
+       title = "Flu vaccination rates by race 2018-2024")
+
+#no "other" or "pacific islander"
+d %>%	mutate(date = as.Date(date)) %>% filter(race %in% c("American Indian/Alaskan Native", "Asian", "Black", "Hispanic", "Multiracial", "White")) %>%
+  group_by(race, month = floor_date(date, "month")) %>%
+  summarise(rate = mean(vaccine == "yes")) %>%
+  ggplot(aes(month, rate, color = race)) +
+  geom_point()+
+  geom_xspline(shape=-0.4)+
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  scale_y_continuous(limits = c(0, 1)) +
+  labs(x = "Survey month",
+       y = "Percent of survey respondents vaccinated within the last 12 months",
+       title = "Flu vaccination rates by race 2018-2024")
+
+#"American Indian/Alaskan Native," "Multiracial", "Pacific Islander" all coded as "Other"
+d %>%	mutate(date = as.Date(date),
+             race = ifelse(race %in% c("American Indian/Alaskan Native", "Multiracial", "Pacific Islander", "Other"),"Other", race)) %>%
+  group_by(race, month = floor_date(date, "month")) %>%
+  summarise(rate = mean(vaccine == "yes")) %>%
+  ggplot(aes(month, rate, color = race)) +
+  geom_point()+
+  geom_xspline(shape=-0.4)+
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  scale_y_continuous(limits = c(0, 1)) +
+  labs(x = "Survey month",
+       y = "Percent of survey respondents\n vaccinated within the last 12 months",
+       title = "Flu vaccination rates by race 2018-2024")
 
 #vaccine rates all
 d %>%
@@ -68,11 +71,12 @@ d %>%
   summarise(rate = mean(vaccine == "yes", na.rm = TRUE)) %>%
   ggplot(aes(month, rate)) +
   geom_point(color = "palevioletred4") +
-  geom_line(color = "palevioletred4") +
+  geom_xspline(shape=-0.4, color = "palevioletred4")+
   scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
   scale_y_continuous(limits = c(0, 1)) +
   labs(x = "Survey month",
-       y = "Percent of survey respondents\n vaccinated within the last 12 months")
+       y = "Percent of survey respondents\n vaccinated within the last 12 months",
+       title = "Flu vaccination rates 2018-2024")
 
 
 # Vaccine Rates by Region and State
@@ -85,8 +89,9 @@ d %>%
   ggplot(aes(x=reorder(region,rate),y=rate)) +
   geom_col(fill="lightblue") +
   ylim(c(0,1))+
-  labs(x = "Region of United States",
-       y = "Overall Vaccination Rate")
+  labs(x = "Region",
+       y = "Overall Vaccination Rate",
+       title = "Flu vaccination rates by region 2018-2024")
 
 d %>% 
   group_by(state, region) %>% 
@@ -95,7 +100,9 @@ d %>%
   geom_col() +
   ylim(c(0,1)) +
   labs(x = "State",
-       y = "Overall Vaccination Rate") +
+       y = "Overall Vaccination Rate",
+       title = "Flu vaccination rates by state 2018-2024",
+       fill = "Region") +
   guides(x = guide_axis(angle = 45))
 
 d %>% 
@@ -104,11 +111,12 @@ d %>%
   summarise(rate = mean(vaccine == "yes", na.rm = TRUE)) %>% 
   ggplot(aes(x = month, y = rate, color = region)) +
   geom_point() +
-  geom_line() +
+  geom_xspline(shape=-0.4)+
   scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
   scale_y_continuous(limits = c(0, 1)) +
   labs(x = "Month",
        y = "Overall Vaccination Rate",
+       title = "Flu vaccination rates by region 2018-2024",
        color = "Region of United States")
 
 # Vaccine Rates by Age
@@ -135,4 +143,3 @@ rFout<-randomForest(vaccine~state + sex + race + age + region, data=d,
 rFout$importance # age is most important predictor
 
 
-  
