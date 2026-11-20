@@ -1,25 +1,17 @@
-library(foreign)
-library(tidyverse)
-library(haven)
-library(fstcore)
-library(fst)
-library(ggplot2)
-library(splines)
-library(ggfun)
-library(randomForest)
-library(party)
-library(tree)
-library(lubridate)
-
+#TREES
 d$vaccine<-as.factor(d$vaccine)
 d$sex<-as.factor(d$sex)
 d$age<-as.factor(d$age)
 d$race<-as.factor(d$race)
 d$region<-as.factor(d$region)
 d$date<-as.factor(d$date)
+d$season<-as.factor(d$season)
 
+#age indicators
 d$over50<-ifelse(d$age=="50-54" | d$age=="55-59", 1, 0)
 d$over60<-ifelse(d$age == "60-64" | d$age == "65-69"| d$age == "70-74"| d$age== "75-79" | d$age == "80+", 1, 0)
+d$over65<-ifelse(d$age == "65-69"| d$age == "70-74"| d$age== "75-79" | d$age == "80+", 1, 0)
+d$over70<-ifelse(d$age == "70-74"| d$age== "75-79" | d$age == "80+", 1, 0)
 
 tree1<-ctree(vaccine~sex+over50+over60, data=d)
 plot(tree1)
@@ -30,15 +22,27 @@ plot(tree2)
 tree3<-ctree(vaccine~sex+over60+region+race, data=d)
 plot(tree3)
 
-##over 65 instead
-d$over65<-ifelse(d$age == "65-69"| d$age == "70-74"| d$age== "75-79" | d$age == "80+", 1, 0)
 tree5<-ctree(vaccine~sex+over65+race+region, data=d)
 plot(tree5)
 
-#everything
-tree6<-ctree(vaccine~sex+age+race+region)
+tree6<-ctree(vaccine~sex+age+race+region, data=d)
+plot(tree6)
 
-#over 70
-d$over70<-ifelse(d$age == "70-74"| d$age== "75-79" | d$age == "80+", 1, 0)
+#everything
+tree11<-ctree(vaccine~sex+age+race+region+season+state, data=d)
+plot(tree11)
+
 tree7<-ctree(vaccine~sex+over50+over60+over70+race+region, data=d)
 plot(tree7)
+
+#ideal age split
+tree10<-ctree(vaccine~over50+over60+over65+over70, data=d)
+plot(tree10)
+
+#with season
+tree8<-ctree(vaccine~sex+season, data=d)
+plot(tree8)
+
+tree9<-ctree(vaccine~sex+over60+season, data=d)
+plot(tree9)
+
