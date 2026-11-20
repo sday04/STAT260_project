@@ -46,3 +46,7 @@ plot(tree8)
 tree9<-ctree(vaccine~sex+over60+season, data=d)
 plot(tree9)
 
+##limiting tree - maxdepth=3
+tree12<-ctree(vaccine~sex+age+race+state+region+season, data=d, control = ctree_control(maxdepth = 3))
+plot(tree12)
+
