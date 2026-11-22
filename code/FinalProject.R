@@ -17,12 +17,6 @@ library(lubridate)
 
 #reading data sets: randomly selecting 10000/year; selecting and renaming columns
 
-library(foreign)
-library(tidyverse)
-library(haven)
-library(fstcore)
-library(fst)
-
 set.seed(8)
 
 #2024 data 
@@ -460,8 +454,20 @@ d %>%
   labs(x="Survey Month",
        y="Percent of survey respondents vaccinated within the last 12 months",
        title = "U.S. flu vaccination rates by age groups 2018-2024")
-    
-    
+
+#vaccine rates by season of interview
+
+#barplot
+d %>% 
+  group_by(season) %>% 
+  summarise(rate=mean(vaccine == "no", na.rm = TRUE)) %>% 
+  ggplot(aes(x=season,y=rate)) +
+  geom_col(fill="thistle4") +
+  ylim(c(0,1))+
+  labs(x = "Season of interview",
+       y = "Percent of survey respondents vaccinated in last 12 months between 2018 and 2024",
+       title = "U.S. flu vaccination rates by season of interview 2018-2024")
+
     
     
     
