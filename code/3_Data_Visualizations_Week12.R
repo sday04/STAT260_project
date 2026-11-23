@@ -149,3 +149,4 @@ d <- d %>%
 rFout<-randomForest(vaccine~state + sex + race + age + region, data=d,
                     ntree=600, importance=TRUE)
 rFout$importance # age is most important predictor
+
