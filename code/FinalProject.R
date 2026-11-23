@@ -278,16 +278,36 @@ vaccine_rates
 d %>%
   mutate(date = as.Date(date)) %>%
   group_by(month = floor_date(date, "month")) %>%
-  summarise(rate = mean(vaccine == "yes", na.rm = TRUE)) %>%
-  ggplot(aes(month, rate)) +
-  geom_point(color = "palevioletred4") +
-  geom_xspline(shape=-0.4, color = "palevioletred4")+
+  summarise(
+    Vaccinated = mean(vaccine == "yes", na.rm = TRUE),
+    `Non-Vaccinated` = mean(vaccine == "no", na.rm = TRUE),
+    `Don't know/Refused` = mean(vaccine == "DK/R", na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  ggplot(aes(month)) +
+  geom_point(aes(y = Vaccinated, color = "Vaccinated")) +
+  geom_xspline(aes(y = Vaccinated, color = "Vaccinated"), shape = -1) +
+  geom_point(aes(y = `Non-Vaccinated`, color = "Non-Vaccinated")) +
+  geom_xspline(aes(y = `Non-Vaccinated`, color = "Non-Vaccinated"), shape = -1) +
+  geom_point(aes(y = `Don't know/Refused`, color = "Don't know/Refused")) +
+  geom_xspline(aes(y = `Don't know/Refused`, color = "Don't know/Refused"), shape = -1) +
+  scale_color_manual(
+    values = c(
+      "Vaccinated" = "green3",
+      "Non-Vaccinated" = "red",
+      "Don't know/Refused" = "blue"),
+    breaks = c(
+      "Vaccinated",
+      "Non-Vaccinated",
+      "Don't know/Refused")) +
   scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
   scale_y_continuous(limits = c(0, 1)) +
-  labs(x = "Survey month",
-       y = "Percent of survey respondents vaccinated within the last 12 months",
-       title = "U.S. flu vaccination rates 2018-2024")
-
+  labs(
+    x = "Survey month",
+    y = "Percent of survey respondents within the past 12 months",
+    color = "Response",
+    title = "U.S. flu vaccination rates 2018–2024"
+  )
 
 #vaccine rates by sex
 
