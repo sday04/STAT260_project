@@ -304,7 +304,7 @@ d %>%
   scale_y_continuous(limits = c(0, 1)) +
   labs(
     x = "Survey month",
-    y = "Percent of survey respondents within the past 12 months",
+    y = "Percent of survey respondents\n within the past 12 months",
     color = "Response",
     title = "U.S. flu vaccination rates 2018–2024"
   )
