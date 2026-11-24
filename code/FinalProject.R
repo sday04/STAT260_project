@@ -272,82 +272,146 @@ vaccine_counts<- table(d$vaccine)
 vaccine_rates<- prop.table(vaccine_counts)
 vaccine_rates
 
-#overall vaccine rate over time
+d <- CleanData
+library(tidyverse)
+library(ggplot2)
+library(splines)
+library(ggfun)
 
-#spline
+d<-as_tibble(d)
+
+#Overall vaccination rate
 d %>%
   mutate(date = as.Date(date)) %>%
   group_by(month = floor_date(date, "month")) %>%
-  summarise(rate = mean(vaccine == "yes", na.rm = TRUE)) %>%
-  ggplot(aes(month, rate)) +
-  geom_point(color = "palevioletred4") +
-  geom_xspline(shape=-0.4, color = "palevioletred4")+
+  summarise(
+    Vaccinated = mean(vaccine == "yes", na.rm = TRUE),
+    `Non-Vaccinated` = mean(vaccine == "no", na.rm = TRUE),
+    `Don't know/Refused` = mean(vaccine == "DK/R", na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  ggplot(aes(month)) +
+  geom_point(aes(y = Vaccinated, color = "Vaccinated")) +
+  geom_xspline(aes(y = Vaccinated, color = "Vaccinated"), shape = -1) +
+  geom_point(aes(y = `Non-Vaccinated`, color = "Non-Vaccinated")) +
+  geom_xspline(aes(y = `Non-Vaccinated`, color = "Non-Vaccinated"), shape = -1) +
+  geom_point(aes(y = `Don't know/Refused`, color = "Don't know/Refused")) +
+  geom_xspline(aes(y = `Don't know/Refused`, color = "Don't know/Refused"), shape = -1) +
+  scale_color_manual(
+    values = c(
+      "Vaccinated" = "green3",
+      "Non-Vaccinated" = "red",
+      "Don't know/Refused" = "blue"),
+    breaks = c(
+      "Vaccinated",
+      "Non-Vaccinated",
+      "Don't know/Refused")) +
   scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
   scale_y_continuous(limits = c(0, 1)) +
   labs(x = "Survey month",
-       y = "Percent of survey respondents vaccinated within the last 12 months",
-       title = "U.S. flu vaccination rates 2018-2024")
+       y = "Percent of survey respondents\n within the past 12 months",
+       color = "Response",
+       title = "U.S. flu vaccination rates 2018–2024")
 
-
-#vaccine rates by sex
-
-#spline for "yes" responses rate
- d %>%	mutate(date = as.Date(date)) %>%
+#Vaccinate rate by sex
+#Vaccinated
+d %>%	mutate(date = as.Date(date)) %>%
+  filter(sex != "DK/R/M") %>%
   group_by(sex, month = floor_date(date, "month")) %>%
   summarise(rate = mean(vaccine == "yes")) %>%
   ggplot(aes(month, rate, color = sex)) +
   geom_point()+
-  geom_xspline(shape=-0.4)+
+  geom_xspline(shape=-1)+
   scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
   scale_y_continuous(limits = c(0, 1)) +
   labs(x = "Survey month",
-       y = "Percent of survey respondents vaccinated within the last 12 months", title = "U.S. flu vaccination rates by sex 2018-2024")
-       
-#spline for "no" responses rate
- d %>%	mutate(date = as.Date(date)) %>%
+       y = "Percent of survey respondents\n within the past 12 months",
+       color = "Sex",
+       title = "Flu vaccination rates by sex 2018-2024")
+
+#Non-vaccinated
+d %>%	mutate(date = as.Date(date)) %>%
+  filter(sex != "DK/R/M") %>%
   group_by(sex, month = floor_date(date, "month")) %>%
   summarise(rate = mean(vaccine == "no")) %>%
   ggplot(aes(month, rate, color = sex)) +
   geom_point()+
-  geom_xspline(shape=-0.4)+
+  geom_xspline(shape=-1)+
   scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
   scale_y_continuous(limits = c(0, 1)) +
   labs(x = "Survey month",
-       y = "Percent of survey respondents not vaccinated within the last 12 months", title = "U.S. flu non-vaccination rates by sex 2018-2024")
-       
-#spline for "DK/R/M" responses rate
- d %>%	mutate(date = as.Date(date)) %>%
+       y = "Percent of survey respondents\n within the past 12 months",
+       color = "Sex",
+       title = "Flu vaccination rates by sex 2018-2024")
+
+#DK/R/M
+d %>%	mutate(date = as.Date(date)) %>%
+  filter(sex != "DK/R/M") %>%
   group_by(sex, month = floor_date(date, "month")) %>%
   summarise(rate = mean(vaccine == "DK/R/M")) %>%
   ggplot(aes(month, rate, color = sex)) +
   geom_point()+
-  geom_xspline(shape=-0.4)+
+  geom_xspline(shape=-1)+
   scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
   scale_y_continuous(limits = c(0, 1)) +
   labs(x = "Survey month",
-       y = "Percent of survey respondents with unknown vaccination status within the last 12 months", title = "U.S. unknown flu vaccination rates by sex 2018-2024")
+       y = "Percent of survey respondents\n within the past 12 months",
+       color = "Sex",
+       title = "Flu DK/R/M rates by sex 2018-2024")
 
-#vaccine rates by race 
-##"American Indian/Alaskan Native", "Multiracial", "Pacific Islander", "DK/R/M" all coded as "Other"
-
-#splines by month
+#Vaccination rate by race
+#Vaccinated
 d %>%	mutate(date = as.Date(date),
-             race = ifelse(race %in% c("American Indian/Alaskan Native", "Multiracial", "Pacific Islander", "Other", "DK/R/M"),"Other", race)) %>%
+             race = ifelse(race %in% c("American Indian/Alaskan Native", "Multiracial", "Pacific Islander", "Other"),"Other", race)) %>%
+  filter(race != "DK/R/M") %>%
   group_by(race, month = floor_date(date, "month")) %>%
   summarise(rate = mean(vaccine == "yes")) %>%
   ggplot(aes(month, rate, color = race)) +
   geom_point()+
-  geom_xspline(data = ~subset(., race!="Asian"), shape=-0.4)+
-  geom_xspline(data = ~subset(., race == "Asian"), shape=0.8)+
+  geom_xspline(shape=-1)+
   scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
   scale_y_continuous(limits = c(0, 1)) +
   labs(x = "Survey month",
-       y = "Percent of survey respondents vaccinated within the last 12 months",
-       title = "U.S. flu vaccination rates by race 2018-2024")
+       y = "Percent of survey respondents\n  within the past 12 months",
+       color = "Race",
+       title = "Flu vaccination rates by race 2018-2024")
 
-#splines by year
+#Non-vaccinated
+d %>%	mutate(date = as.Date(date),
+             race = ifelse(race %in% c("American Indian/Alaskan Native", "Multiracial", "Pacific Islander", "Other"),"Other", race)) %>%
+  filter(race != "DK/R/M") %>%
+  group_by(race, month = floor_date(date, "month")) %>%
+  summarise(rate = mean(vaccine == "no")) %>%
+  ggplot(aes(month, rate, color = race)) +
+  geom_point()+
+  geom_xspline(shape=-1)+
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  scale_y_continuous(limits = c(0, 1)) +
+  labs(x = "Survey month",
+       y = "Percent of survey respondents\n within the past 12 months",
+       color = "Race",
+       title = "Flu non-vaccination rates by race 2018-2024")
+
+#DK/R/M
+d %>%	mutate(date = as.Date(date),
+             race = ifelse(race %in% c("American Indian/Alaskan Native", "Multiracial", "Pacific Islander", "Other"),"Other", race)) %>%
+  filter(race != "DK/R/M") %>%
+  group_by(race, month = floor_date(date, "month")) %>%
+  summarise(rate = mean(vaccine == "DK/R/M")) %>%
+  ggplot(aes(month, rate, color = race)) +
+  geom_point()+
+  geom_xspline(shape=-1)+
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  scale_y_continuous(limits = c(0, 1)) +
+  labs(x = "Survey month",
+       y = "Percent of survey respondents\n within the past 12 months",
+       color = "Race",
+       title = "Flu DK/R/M rates by race 2018-2024")
+
+#By year
 d %>%	mutate(date = as.Date(date),
              race = ifelse(race %in% c("American Indian/Alaskan Native", "Multiracial", "Pacific Islander", "Other", "DK/R/M"),"Other", race)) %>%
+  filter(race != "DK/R/M") %>%
   group_by(race, year = floor_date(date, "year")) %>%
   summarise(rate = mean(vaccine == "yes")) %>%
   ggplot(aes(year, rate, color = race)) +
@@ -356,53 +420,124 @@ d %>%	mutate(date = as.Date(date),
   scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
   scale_y_continuous(limits = c(0, 1)) +
   labs(x = "Survey month",
-       y = "Percent of survey respondents vaccinated within the last 12 months",
-       title = "U.S. flu vaccination rates by race 2018-2024")
-       
-#vaccine rates by region and state
+       y = "Percent of survey respondents\n within the past 12 months",
+       color = "Race",
+       title = "Flu vaccination rates by race 2018-2024")
 
-#region barplot
-d %>% 
-  group_by(region) %>% 
-  summarise(rate=mean(vaccine == "yes", na.rm = TRUE)) %>% 
-  ggplot(aes(x=reorder(region,rate),y=rate)) +
-  geom_col(fill="lightblue") +
-  ylim(c(0,1))+
-  labs(x = "Region",
-       y = "Overall Vaccination Rate",
-       title = "U.S. flu vaccination rates by region 2018-2024")
-
-#state and region barplot
-d %>% 
-  group_by(state, region) %>% 
-  summarise(rate=mean(vaccine == "yes", na.rm = TRUE)) %>% 
-  ggplot(aes(x=reorder(state,rate),y=rate, fill=region)) +
-  geom_col() +
-  ylim(c(0,1)) +
-  labs(x = "State",
-       y = "Overall Vaccination Rate",
-       title = "U.S. flu vaccination rates by state 2018-2024",
-       fill = "Region") +
-  guides(x = guide_axis(angle = 45))
-
-#region spline (by month)
+# Vaccination rate by age
+#Vaccinated
 d %>% 
   mutate(date = as.Date(date)) %>%
+  filter(age != "DK/R/M") %>%
+  group_by(age, month = floor_date(date, "month")) %>%
+  summarise(rate = mean(vaccine == "yes", na.rm = TRUE)) %>% 
+  ggplot(aes(x = month, y = rate, color = age)) +
+  geom_point() +
+  geom_xspline(shape=-1)+
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  scale_y_continuous(limits = c(0, 1)) +
+  labs(x= "Age group",
+       y= "Percent of survey respondents\n within the past 12 months",
+       color = "Age",
+       title = "Flu vaccination rates by age 2018-2024")
+
+#Non-vaccinated
+d %>% 
+  mutate(date = as.Date(date)) %>%
+  filter(age != "DK/R/M") %>%
+  group_by(age, month = floor_date(date, "month")) %>%
+  summarise(rate = mean(vaccine == "no", na.rm = TRUE)) %>% 
+  ggplot(aes(x = month, y = rate, color = age)) +
+  geom_point() +
+  geom_xspline(shape=-1)+
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  scale_y_continuous(limits = c(0, 1)) +
+  labs(x= "Age group",
+       y= "Percent of survey respondents\n within the past 12 months",
+       color = "Age",
+       title = "Flu non-vaccination rates by age 2018-2024")
+
+#DK/R/M
+d %>% 
+  mutate(date = as.Date(date)) %>%
+  filter(age != "DK/R/M") %>%
+  group_by(age, month = floor_date(date, "month")) %>%
+  summarise(rate = mean(vaccine == "DK/R/M", na.rm = TRUE)) %>% 
+  ggplot(aes(x = month, y = rate, color = age)) +
+  geom_point() +
+  geom_xspline(shape=-1)+
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  scale_y_continuous(limits = c(0, 1)) +
+  labs(x= "Age group",
+       y= "Percent of survey respondents\n within the past 12 months",
+       color = "Age",
+       title = "Flu DK/R/M rates by age 2018-2024")
+
+#Age barplot
+d %>% 
+  filter(age != "DK/R/M") %>%
+  group_by(age) %>% 
+  summarise(rate=mean(vaccine == "yes", na.rm = TRUE)) %>% 
+  ggplot(aes(x=age,y=rate)) +
+  geom_col() +
+  ylim(c(0,1))+
+  labs(x = "Age Group",
+       y = "Percent of survey respondents",
+       title = "Flu vaccination rates by age 2018-2024")
+
+#Vaccination rate by region
+#Vaccinated
+d %>% 
+  mutate(date = as.Date(date)) %>%
+  filter(region != "DK/R/M") %>%
   group_by(region, month = floor_date(date, "month")) %>%
   summarise(rate = mean(vaccine == "yes", na.rm = TRUE)) %>% 
   ggplot(aes(x = month, y = rate, color = region)) +
   geom_point() +
-  geom_xspline(shape=-0.4)+
+  geom_xspline(shape=-1)+
   scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
   scale_y_continuous(limits = c(0, 1)) +
   labs(x = "Survey Month",
-       y = "Percent of survey respondents vaccinated within the last 12 months",
-       title = "U.S. flu vaccination rates by region 2018-2024",
-       color = "Region of United States")
-       
-#region spline (by year)
+       y = "Percent of survey respondents\n within the past 12 months",
+       color = "Region of the U.S.",
+       title = "Flu vaccination rates by region 2018-2024")
+
+#Non-vaccinated
 d %>% 
   mutate(date = as.Date(date)) %>%
+  filter(region != "DK/R/M") %>%
+  group_by(region, month = floor_date(date, "month")) %>%
+  summarise(rate = mean(vaccine == "no", na.rm = TRUE)) %>% 
+  ggplot(aes(x = month, y = rate, color = region)) +
+  geom_point() +
+  geom_xspline(shape=-1)+
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  scale_y_continuous(limits = c(0, 1)) +
+  labs(x = "Survey Month",
+       y = "Percent of survey respondents\n within the past 12 months",
+       color = "Region of the U.S.",
+       title = "Flu non-vaccination rates by region 2018-2024")
+
+#DK/R/M
+d %>% 
+  mutate(date = as.Date(date)) %>%
+  filter(region != "DK/R/M") %>%
+  group_by(region, month = floor_date(date, "month")) %>%
+  summarise(rate = mean(vaccine == "DK/R/M", na.rm = TRUE)) %>% 
+  ggplot(aes(x = month, y = rate, color = region)) +
+  geom_point() +
+  geom_xspline(shape=-1)+
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  scale_y_continuous(limits = c(0, 1)) +
+  labs(x = "Survey Month",
+       y = "Percent of survey respondents\n within the past 12 months",
+       color = "Region of the U.S.",
+       title = "Flu DK/R/M rates by region 2018-2024")
+
+#By year
+d %>% 
+  mutate(date = as.Date(date)) %>%
+  filter(region != "DK/R/M") %>%
   group_by(region, year = floor_date(date, "year")) %>%
   summarise(rate = mean(vaccine == "yes", na.rm = TRUE)) %>% 
   ggplot(aes(x = year, y = rate, color = region)) +
@@ -411,62 +546,102 @@ d %>%
   scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
   scale_y_continuous(limits = c(0, 1)) +
   labs(x = "Survey Month",
-       y = "Percent of survey respondents vaccinated within the last 12 months",
-       title = "U.S. flu vaccination rates by region 2018-2024",
-       color = "Region of United States")
+       y = "Percent of survey respondents\n within the past 12 months",
+       color = "Region of the U.S.",
+       title = "Flu vaccination rates by region 2018-2024")
 
-
-#Vaccine rates by age
-
-#barplot
+#Region barplot
 d %>% 
-  group_by(age) %>% 
+  filter(region != "DK/R/M") %>%
+  group_by(region) %>% 
   summarise(rate=mean(vaccine == "yes", na.rm = TRUE)) %>% 
-  ggplot(aes(x=age,y=rate)) +
-  geom_col(fill="thistle4") +
+  ggplot(aes(x=reorder(region,rate),y=rate)) +
+  geom_col() +
   ylim(c(0,1))+
-  labs(x = "Age Group",
-       y = "Percent of survey respondents vaccinated between 2018 and 2024",
-       title = "U.S. flu vaccination rates by age groups 2018-2024")
+  labs(x = "Region",
+       y = "Percent of survey respondents",
+       title = "Flu vaccination rates by region 2018-2024")
 
-#spline (by month)
+#State and region barplot
 d %>% 
-  mutate(date = as.Date(date)) %>%
-  group_by(month = floor_date(date, "month"), age) %>%
+  filter(region != "DK/R/M") %>%
+  group_by(state, region) %>% 
   summarise(rate=mean(vaccine == "yes", na.rm = TRUE)) %>% 
-  ggplot(aes(month, rate, color = age)) +
+  ggplot(aes(x=reorder(state,rate),y=rate, fill=region)) +
+  geom_col() +
   ylim(c(0,1)) +
-  geom_point() +
-  geom_xspline(shape=-0.4) + 
-  labs(x="Survey Month",
-       y="Percent of survey respondents vaccinated within the last 12 months",
-       title = "U.S. flu vaccination rates by age groups 2018-2024")
-      
-#spline (by year)
-d %>% 
-  mutate(date = as.Date(date)) %>%
-  group_by(year = floor_date(date, "year"), age) %>%
-  summarise(rate=mean(vaccine == "yes", na.rm = TRUE)) %>% 
-  ggplot(aes(year, rate, color = age)) +
-  ylim(c(0,1)) +
-  geom_point() +
-  geom_xspline(shape=-0.4) + 
-  labs(x="Survey Month",
-       y="Percent of survey respondents vaccinated within the last 12 months",
-       title = "U.S. flu vaccination rates by age groups 2018-2024")
+  labs(x = "State",
+       y = "Percent of survey respondents",
+       title = "Flu vaccination rates by region 2018-2024",
+       fill = "Region") +
+  guides(x = guide_axis(angle = 45))
 
-#vaccine rates by season of interview
-
-#barplot
+#Vaccination rate by season
+#Season barplot
 d %>% 
   group_by(season) %>% 
   summarise(rate=mean(vaccine == "no", na.rm = TRUE)) %>% 
   ggplot(aes(x=season,y=rate)) +
-  geom_col(fill="thistle4") +
+  geom_col() +
   ylim(c(0,1))+
-  labs(x = "Season of interview",
-       y = "Percent of survey respondents vaccinated in last 12 months between 2018 and 2024",
-       title = "U.S. flu vaccination rates by season of interview 2018-2024")
+  labs(x = "Survey Season",
+       y = "Percent of survey respondents",
+       title = "Flu vaccination rates by season 2018-2024")
+
+# Exploring Interactions: Age and Sex
+view(d)
+
+d %>% 
+  group_by(sex, age) %>% 
+  summarise(rate = mean(vaccine == "yes", na.rm = TRUE)) %>% 
+  ggplot(aes(x = age, y = rate, fill = sex)) +
+  geom_col(position = "dodge") +
+  ylim(c(0,1)) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)
+  ) +
+  labs(
+    x = "Age of Respondent",
+    y = "% survey respondents vaccinated \nwithin the last 12 months",
+    title = "Flu vaccination rates 2018-2024 by age and sex"
+  )
+d %>% 
+  group_by(sex, age) %>% 
+  summarise(rate = mean(vaccine == "yes", na.rm = TRUE)) %>% 
+  ggplot(aes(age, rate, color = sex, group = sex)) +
+  geom_line()+
+  geom_point() +
+  ylim(c(0,1)) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)
+  ) +
+  labs(
+    x = "Age of Respondent",
+    y = "% survey respondents vaccinated \nwithin the last 12 months",
+    title = "Flu vaccination rates 2018-2024 by age and sex"
+  )
+
+
+# Exploring Interactions: Age and Race
+view(d)
+
+d %>% 
+  mutate(date = as.Date(date),
+         race = ifelse(race %in% c("American Indian/Alaskan Native", "Multiracial", "Pacific Islander", "Other"),"Other", race)) %>% 
+  group_by(race, age) %>% 
+  summarise(rate = mean(vaccine == "yes", na.rm = TRUE)) %>% 
+  ggplot(aes(age, rate, color = race, group = race)) +
+  geom_line()+
+  geom_point() +
+  ylim(c(0,1)) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)
+  ) +
+  labs(
+    x = "Age of Respondent",
+    y = "% survey respondents vaccinated \nwithin the last 12 months",
+    title = "Flu vaccination rates 2018-2024 by age and race"
+  )
 
     
     
