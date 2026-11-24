@@ -7,6 +7,13 @@ library(tidyverse)
 library(haven)
 library(fstcore)
 library(fst)
+library(ggplot2)
+library(splines)
+library(ggfun)
+library(randomForest)
+library(party)
+library(tree)
+library(lubridate)
 
 #using sample data sets
 
@@ -146,9 +153,16 @@ summary(d_combined$date) #1 NAs
 #removing rows with NAs
 d_combined<- d_combined %>% drop_na()
 
+#adding season indicator 
+d_combined %>% mutate (date=as.Date(date), season = case_when(
+					month(date) %in% c(12, 1, 2) ~ "winter", 
+					month(date) %in% c(3, 4, 5) ~ "spring", 
+					month(date) %in% c(6, 7, 8) ~ "summer", 
+					month(date) %in% c(9, 10, 11) ~"fall"))
+
 #FINAL DATA SET
 
-dim(d_combined) # 59,679 rows x 7 columns
+dim(d_combined) # 59,679 rows x 8 columns
 
 #saving data file
 write.csv(d_combined, "CleanData.csv", row.names=FALSE)
