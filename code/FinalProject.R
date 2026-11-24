@@ -667,6 +667,13 @@ d$race<-as.factor(d$race)
 d$region<-as.factor(d$region)
 d$date<-as.factor(d$date)
 d$season<-as.factor(d$season)
+d$state<-as.factor(d$state)
 
+#tree with all predictors 
 tree<-ctree(vaccine~sex+age+race+state+region+season, data=d, control = ctree_control(maxdepth = 3))
-plot(tree)
+#saving as pdf
+pdf("tree_allpredictors.pdf", width=20, height=12)
+plot(tree, inner_panel=node_inner(tree, pval=FALSE, id=FALSE), terminal_panel=node_barplot(tree, id=FALSE))
+dev.off()
+#seeing where splits happened (to fix labels)
+tree 
