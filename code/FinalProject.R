@@ -13,6 +13,7 @@ library(party)
 library(tree)
 library(lubridate)
 
+
 ###DATA CLEANING###
 
 #reading data sets: randomly selecting 10000/year; selecting and renaming columns
@@ -267,19 +268,6 @@ write.csv(d_combined, "CleanData.csv", row.names=FALSE)
 d<-read.csv("CleanData.csv")
 d<-as_tibble(d)
 
-#vaccine rates
-vaccine_counts<- table(d$vaccine)
-vaccine_rates<- prop.table(vaccine_counts)
-vaccine_rates
-
-d <- CleanData
-library(tidyverse)
-library(ggplot2)
-library(splines)
-library(ggfun)
-
-d<-as_tibble(d)
-
 #Overall vaccination rate
 d %>%
   mutate(date = as.Date(date)) %>%
@@ -419,7 +407,7 @@ d %>%	mutate(date = as.Date(date),
   geom_xspline(shape=-0.4)+
   scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
   scale_y_continuous(limits = c(0, 1)) +
-  labs(x = "Survey month",
+  labs(x = "Survey year",
        y = "Percent of survey respondents\n within the past 12 months",
        color = "Race",
        title = "Flu vaccination rates by race 2018-2024")
@@ -545,7 +533,7 @@ d %>%
   geom_xspline(shape=-0.4)+
   scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
   scale_y_continuous(limits = c(0, 1)) +
-  labs(x = "Survey Month",
+  labs(x = "Survey year",
        y = "Percent of survey respondents\n within the past 12 months",
        color = "Region of the U.S.",
        title = "Flu vaccination rates by region 2018-2024")
